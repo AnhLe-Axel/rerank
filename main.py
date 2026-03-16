@@ -18,7 +18,13 @@ def main():
     if raw_chunks is None:
         return
 
+    print("Before prepare_rerank_payload:")
+    print(json.dumps({"question": question, "raw_chunks": raw_chunks}, ensure_ascii=False, indent=2))
+
     rerank_payload = prepare_rerank_payload(question, raw_chunks)
+
+    print("After prepare_rerank_payload:")
+    print(json.dumps(rerank_payload, ensure_ascii=False, indent=2))
 
     result = call_rerank_api(
         session,
