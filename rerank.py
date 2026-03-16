@@ -41,14 +41,8 @@ def prepare_rerank_payload(question: str, raw_chunks: list[dict], top_k: int = 5
 
         # 2. Xây dựng Passage tối giản (Vứt bỏ toàn bộ metadata, upload_date, file_id...)
         passage = {
-            "_id": chunk.get("chunk_id"),
-            "info": {
-                "content": {
-                    "title": content.get("title", ""),  # Có thể gửi title gốc nếu API tự nối
-                    "context": final_clean_text  # Đã được gộp và làm sạch
-                }
-            },
-            # Giữ lại điểm ban đầu của vector search (nếu Rerank API có thuật toán mix score)
+            "chunk_id": chunk.get("chunk_id"),
+            "content": final_clean_text,
             "score": chunk.get("score", 0.0)
         }
         passages.append(passage)
