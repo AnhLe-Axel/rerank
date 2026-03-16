@@ -1,16 +1,37 @@
-# This is a sample Python script.
-
-# Press Ctrl+F5 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press F9 to toggle the breakpoint.
+import requests
+from rerank import call_rerank_api, prepare_rerank_payload
+from chunks import get_raw_chunks_api, extract_chunks
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+def main():
+    question = "Giá trị cốt lõi của FPT là gì?"
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    session = requests.Session()
+
+    response = get_raw_chunks_api(session, question)
+    if response is None:
+        print("Không nhận được dữ liệu từ Raw Chunks API.")
+        return
+
+    raw_chunks = extract_chunks(response)
+    if raw_chunks is None:
+        return
+
+    rerank_payload = prepare_rerank_payload(question, raw_chunks)
+
+    result = call_rerank_api(
+        session,
+        question=rerank_payload["question"],
+        passages=rerank_payload["passages"],
+        top_k=rerank_payload["top_k"]
+    )
+
+    if result is not None:
+        print("Kết quả Rerank:")
+        print(result)
+    else:
+        print("Rerank API không trả về kết quả.")
+
+
+if __name__ == "__main__":
+    main()
