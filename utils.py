@@ -81,7 +81,8 @@ def format_table_chunk(chunk_content: str, output_format="light_weight_text"):
             table_text = [preprocess_table_content(table_df)
                           for table_df in pd.read_html(chunk_content)]
         except Exception as e:
-            return chunk_content
+            print(f"pd.read_html failed: {e}, falling back to regex HTML strip")
+            return re.sub(r'<[^>]+>', ' ', chunk_content)
 
         if not table_text:
             return chunk_content
