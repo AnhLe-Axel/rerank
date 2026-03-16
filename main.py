@@ -1,3 +1,4 @@
+import json
 import requests
 from rerank import call_rerank_api, prepare_rerank_payload
 from chunks import get_raw_chunks_api, extract_chunks
@@ -28,7 +29,7 @@ def main():
 
     if result is not None:
         print("Kết quả Rerank:")
-        print(result)
+        print(json.dumps(result, ensure_ascii=False, indent=2))
     else:
         print("Rerank API không trả về kết quả.")
 
